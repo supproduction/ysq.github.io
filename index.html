@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>YSQ — S3 · Опитувальник схем Янга</title>
+<link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+<div class="wrap">
+
+  <section id="screen-intro">
+    <header>
+      <div class="eyebrow">Український інститут КПТ</div>
+      <h1>YSQ&nbsp;— S3<span class="sub">Опитувальник ранніх дезадаптивних схем Янга</span></h1>
+      <div class="rule"></div>
+    </header>
+
+    <div class="card intro">
+      <p>Нижче — <span id="introQCount">90</span> тверджень, які можна використати для опису себе. Прочитайте кожне і оцініть, наскільки точно воно відповідає Вам <em>протягом минулого року</em>.</p>
+      <p>Якщо Ви невпевнені — нехай відповідь буде ближчою до того, що Ви відчуваєте <em>емоційно</em>, а не раціонально. Кілька пунктів стосуються стосунків з батьками чи партнером; оцінюйте їх на основі найважливіших для Вас стосунків.</p>
+
+      <div class="scale-legend">
+        <span><b>1</b> абсолютно не відповідає мені</span>
+        <span><b>4</b> в міру відповідає мені</span>
+        <span><b>2</b> в основному не відповідає</span>
+        <span><b>5</b> переважно відповідає мені</span>
+        <span><b>3</b> більше вірно, ніж невірно</span>
+        <span><b>6</b> досконало описує мене</span>
+      </div>
+
+      <div class="field">
+        <label for="username">Ваше ім'я</label>
+        <input type="text" id="username" placeholder="Ім'я Прізвище" autocomplete="name" oninput="onNameInput()">
+        <div class="field-error hidden" id="nameError">Введіть ваше ім'я</div>
+      </div>
+
+      <div class="center" style="margin-top:24px">
+        <button class="btn" id="startBtn" onclick="start()" disabled>Розпочати опитування →</button>
+      </div>
+    </div>
+    <footer>© 2003 Jeffrey Young, Ph.D. · Schema Therapy Institute · укр. переклад УІКПТ, 2013</footer>
+  </section>
+
+  <section id="screen-quiz" class="hidden">
+    <div class="progress-bar">
+      <div class="progress-inner">
+        <div class="count" id="pcount"></div>
+        <div class="track"><div class="fill" id="pfill"></div></div>
+        <div class="count" id="ppct">0%</div>
+      </div>
+    </div>
+    <div class="nav-top">
+      <button class="btn ghost" onclick="backToIntro()">← На початок</button>
+      <span class="top-name" id="topName"></span>
+    </div>
+    <button class="btn fab" id="fab" onclick="scrollToTop()" aria-label="Вгору">↑</button>
+    <div id="questions"></div>
+    <div class="nav">
+      <button class="btn ghost" onclick="backToIntro()">← На початок</button>
+      <button class="btn" id="finishBtn" onclick="onFinish()">Підрахувати результат →</button>
+    </div>
+  </section>
+
+  <section id="screen-results" class="hidden">
+    <div class="results-head">
+      <div class="eyebrow">Результат</div>
+      <h2>Профіль схем</h2>
+      <p class="result-name" id="resultName"></p>
+      <p>Сума та середнє арифметичне по кожній з <span id="introSchemaCount">18</span> схем</p>
+      <div class="total-pill">Загальна сума балів за YSQ:&nbsp; <b id="grandtotal">0</b></div>
+    </div>
+
+    <div class="disclaimer">
+      <strong>Важливо.</strong> Це не діагноз. Опитувальник YSQ-S3 — інструмент самоспостереження, який має інтерпретуватися кваліфікованим фахівцем (психотерапевтом). Високі бали вказують лише на ймовірну активність схеми і потребують обговорення зі спеціалістом.
+    </div>
+
+    <div class="legend-row">
+      <div class="legend-note">
+        <span class="legend-title">Орієнтир по середньому балу</span>
+        <span>до 2,0 — <b class="lvl-low">низький</b></span>
+        <span>2,0–2,9 — <b class="lvl-mid">помірний</b></span>
+        <span>3,0–3,9 — <b class="lvl-high">підвищений</b></span>
+        <span>4,0 і вище — <b class="lvl-vhigh">високий</b></span>
+      </div>
+      <button class="btn" onclick="window.print()">Зберегти / Друк</button>
+    </div>
+
+    <div id="schemaResults"></div>
+
+    <div class="nav">
+      <button class="btn ghost" onclick="restart()">↻ Пройти знову</button>
+      <button class="btn" onclick="window.print()">Зберегти / Друк</button>
+    </div>
+    <footer>© 2003 Jeffrey Young, Ph.D. · укр. переклад УІКПТ, 2013</footer>
+  </section>
+
+</div>
+
+<template id="tpl-question">
+  <div class="q">
+    <div class="q-num"></div>
+    <div class="q-text"></div>
+    <div class="opts"></div>
+  </div>
+</template>
+<template id="tpl-opt">
+  <div class="opt"><small></small></div>
+</template>
+<template id="tpl-schema">
+  <details class="schema">
+    <summary>
+      <div class="schema-head">
+        <span class="chev">▸</span>
+        <div>
+          <div class="name"></div>
+          <span class="tag"></span>
+        </div>
+        <div class="scores">Сума <b class="sum"></b><br>сер. <span class="avg"></span></div>
+        <div class="meter"><i></i></div>
+      </div>
+    </summary>
+    <div class="schema-items"></div>
+  </details>
+</template>
+<template id="tpl-qrow">
+  <div class="qrow"><span class="qn"></span><span class="qtext"></span><span class="qscore"></span></div>
+</template>
+
+<script src="data/questions.js"></script>
+<script src="data/schemas.js"></script>
+
+<script src="js/app.js"></script>
+</body>
+</html>
