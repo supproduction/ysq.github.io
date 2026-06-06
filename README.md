@@ -27,20 +27,6 @@ documents/         вихідні матеріали методики (PDF, scor
 
 Подвійний клік по `index.html` — працює одразу, без сервера.
 
-Якщо потрібно як на проді (через `http://`) — використовуйте Live Server у VS Code або:
-
-```
-python3 -m http.server
-```
-
-і відкрийте `http://localhost:8000/`.
-
-## Розгортання на GitHub Pages
-
-1. Запуште репозиторій на GitHub (головний файл уже називається `index.html`, тож відкриватиметься за кореневою адресою).
-2. Settings → Pages → Source: гілка `main`, тека `/ (root)`.
-3. Сайт буде доступний за адресою `https://<username>.github.io/<repo>/`.
-
 ## Як редагувати
 
 - **Запитання** — `data/questions.js`, масив `QUESTIONS`. Кількість запитань усюди рахується автоматично з `QUESTIONS.length`.
