@@ -49,7 +49,7 @@
   .intro p{color:var(--ink-soft);margin-bottom:16px}
   .intro p:last-child{margin-bottom:0}
   .scale-legend{
-    margin:22px 0;display:grid;grid-template-columns:1fr 1fr;gap:8px 26px;
+    margin:22px 0;display:grid;grid-template-columns:1fr 1fr;grid-template-rows:repeat(3,auto);grid-auto-flow:column;gap:8px 26px;
     font-size:15.5px;color:var(--ink-soft);
   }
   .scale-legend span{display:flex;gap:10px;align-items:baseline}
@@ -173,7 +173,7 @@
   @media(max-width:560px){
     body{font-size:17px}
     .card{padding:26px 20px}
-    .scale-legend{grid-template-columns:1fr}
+    .scale-legend{grid-template-columns:1fr;grid-template-rows:none;grid-auto-flow:row}
     .opts{grid-template-columns:repeat(6,1fr);gap:4px}
     .opt{padding:10px 0;font-size:16px}
     .opt small{display:none}
