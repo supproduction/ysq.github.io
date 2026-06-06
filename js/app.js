@@ -96,7 +96,7 @@ function pick(q,v){
   updateProgress();
   const next=document.getElementById('q'+(q+1));
   if(next && answers[q+1]===0){
-    setTimeout(()=>scrollToElement(next, 600),180);
+    setTimeout(()=>next.scrollIntoView({behavior:'smooth',block:'center'}),180);
   }
 }
 
@@ -119,38 +119,15 @@ function show(name){
   window.scrollTo(0,0);
 }
 
-function smoothScrollTo(targetY, duration){
-  const maxY=Math.max(0, document.documentElement.scrollHeight-window.innerHeight);
-  const endY=Math.max(0, Math.min(targetY, maxY));
-  const startY=window.scrollY;
-  const diff=endY-startY;
-  if(Math.abs(diff)<2){ window.scrollTo(0, endY); return; }
-  const ease=t=> t<0.5 ? 4*t*t*t : 1-Math.pow(-2*t+2,3)/2;
-  let startTime=null;
-  function step(now){
-    if(startTime===null) startTime=now;
-    const t=Math.min((now-startTime)/duration, 1);
-    window.scrollTo({top:startY+diff*ease(t), behavior:'auto'});
-    if(t<1) requestAnimationFrame(step);
-  }
-  requestAnimationFrame(step);
-}
-
-function scrollToElement(el, duration){
-  const rect=el.getBoundingClientRect();
-  const targetY=window.scrollY+rect.top-(window.innerHeight-rect.height)/2;
-  smoothScrollTo(targetY, duration);
-}
-
 function scrollToTop(){
-  smoothScrollTo(0, 500);
+  window.scrollTo({top:0,behavior:'smooth'});
 }
 
 function scrollToFirstUnanswered(){
   for(let q=1;q<=TOTAL;q++){
     if(!answers[q]){
       const card=document.getElementById('q'+q);
-      if(card) scrollToElement(card, 600);
+      if(card) card.scrollIntoView({behavior:'smooth',block:'center'});
       return;
     }
   }
